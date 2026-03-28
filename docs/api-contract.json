@@ -1,1 +1,21 @@
-
+{
+  "endpoint": "POST /analyze",
+  "input": "image (multipart/form-data)",
+  "output": {
+    "ai_score": 82,
+    "originality_score": 18,
+    "manipulation_confidence": 79,
+    "gan_fingerprint": 65,
+    "verdict": "AI Generated",
+    "summary": "2 sentence forensic summary here.",
+    "regions": [
+      {"name": "Background", "score": 90, "status": "ai"}
+    ],
+    "findings": [
+      {"type": "crit", "title": "GAN artifacts detected", "detail": "explanation here."}
+    ],
+    "attribution": [
+      {"model": "Stable Diffusion", "confidence": 78}
+    ]
+  }
+}
