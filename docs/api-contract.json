@@ -1,21 +1,45 @@
 {
   "endpoint": "POST /analyze",
-  "input": "image (multipart/form-data)",
+  "input": {
+    "type": "multipart/form-data",
+    "field": "image",
+    "format": "jpg/png"
+  },
   "output": {
-    "ai_score": 82,
-    "originality_score": 18,
-    "manipulation_confidence": 79,
-    "gan_fingerprint": 65,
-    "verdict": "AI Generated",
-    "summary": "2 sentence forensic summary here.",
+    "ai_score": "number (0-100)",
+    "originality_score": "number (0-100)",
+    "manipulation_confidence": "number (0-100)",
+    "gan_fingerprint": "number (0-100)",
+    "verdict": "string (AUTHENTIC | LIKELY AUTHENTIC | INCONCLUSIVE | LIKELY AI-GENERATED | AI-GENERATED | HYBRID)",
+    "summary": "string (2 sentences)",
+
     "regions": [
-      {"name": "Background", "score": 90, "status": "ai"}
+      {
+        "name": "string",
+        "score": "number (0-100)",
+        "status": "string (clean | suspect | ai)"
+      }
     ],
+
     "findings": [
-      {"type": "crit", "title": "GAN artifacts detected", "detail": "explanation here."}
+      {
+        "type": "string (crit | warn | info)",
+        "title": "string",
+        "detail": "string"
+      }
     ],
+
     "attribution": [
-      {"model": "Stable Diffusion", "confidence": 78}
+      {
+        "model": "string",
+        "confidence": "number (0-100)"
+      }
     ]
+  },
+
+  "constraints": {
+    "regions_count": 6,
+    "findings_count": 4,
+    "attribution_count": 3
   }
 }
