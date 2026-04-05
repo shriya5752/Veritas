@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+uploads/
+outputs/
+veritas_seg_best.pth
+veritas_seg_best/
