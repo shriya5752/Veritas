@@ -1,14 +1,20 @@
 # services.py
-from PIL import Image
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'model'))
+
+from predict import load_model, predict_from_pil
 from schemas import AnalysisResponse, Region, Finding, Attribution
-from ml_model import predict
 from scoring import calculate_scores, get_verdict, get_summary
 from image_utils import generate_heatmap_regions
+from PIL import Image
+
+_model = load_model()
 
 async def run_analysis(img: Image.Image, filename: str) -> AnalysisResponse:
 
     # ── Step 1: Get raw model output ──────────────────────────
-    raw = predict(img)
+    raw = predict_from_pil(img, _model)
     # raw = { "class": "AI", "confidence": 82.0, "derivation_score": 78.0 }
 
     # ── Step 2: Calculate all scores ─────────────────────────
