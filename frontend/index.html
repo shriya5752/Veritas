@@ -405,13 +405,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </div>
         <div id="a-result-content">
-          <div class="r-score-hero"><div class="r-score-num" id="r-score-num">0%</div><div><div class="r-verdict" id="r-verdict">—</div><div class="r-verdict-sub">AI Derivation Score</div><div class="r-summary" id="r-summary"></div></div></div>
+          <div class="r-score-hero"><div class="r-score-num" id="r-score-num">0%</div><div><div class="r-verdict" id="r-verdict">—</div><div class="r-verdict-sub">Originality Score</div><div class="r-summary" id="r-summary"></div></div></div>
           <div class="r-meters">
             <div class="r-meter"><div class="r-meter-label">AI Content Level <span id="m1-val">—</span></div><div class="r-bar"><div class="r-bar-fill" id="m1-fill" style="width:0%"></div></div></div>
             <div class="r-meter"><div class="r-meter-label">Manipulation Confidence <span id="m2-val">—</span></div><div class="r-bar"><div class="r-bar-fill" id="m2-fill" style="width:0%"></div></div></div>
             <div class="r-meter"><div class="r-meter-label">GAN Fingerprint Match <span id="m3-val">—</span></div><div class="r-bar"><div class="r-bar-fill gold" id="m3-fill" style="width:0%"></div></div></div>
             <div class="r-meter"><div class="r-meter-label">Originality Score <span id="m4-val">—</span></div><div class="r-bar"><div class="r-bar-fill gold" id="m4-fill" style="width:0%"></div></div></div>
           </div>
+          <div id="r-heatmap-img-wrap"></div>
           <div style="margin-bottom:20px"><div class="r-section-title">Region Heatmap</div><div class="heatmap-grid" id="r-heatmap"></div></div>
           <div style="margin-bottom:20px"><div class="r-section-title">Forensic Findings</div><div id="r-findings"></div></div>
           <div style="margin-bottom:8px"><div class="r-section-title">Source Attribution</div><div id="r-attribution"></div></div>
@@ -790,10 +791,11 @@ async function runScan(){
   // ─── TOGGLE THIS ───────────────────────────────────────────
   // true  = uses mock data (no backend needed, works right now)
   // false = calls your real backend at POST /analyze
-  const USE_MOCK = true;
+  const USE_MOCK = false;
   // ───────────────────────────────────────────────────────────
 
-  const BACKEND_URL = 'http://localhost:5000/analyze'; // change to your backend URL when ready
+  const BACKEND_URL = 'http://127.0.0.1:8000/analyze';
+ // change to your backend URL when ready
 
   aScanBtn.classList.add('loading'); aScanBtn.disabled = true;
   aErr.classList.remove('show');
@@ -909,8 +911,8 @@ async function runScan(){
 function showResult(r){
   document.getElementById('a-result-content').style.display='block';
   const sn=document.getElementById('r-score-num');
-  sn.textContent=r.ai_score+'%';
-  sn.className='r-score-num '+(r.ai_score>=70?'high':r.ai_score>=40?'med':'low');
+  sn.textContent = r.ai_score + '%';
+  sn.className = 'r-score-num ' + (r.originality_score >= 70 ? 'low' : r.originality_score >= 40 ? 'med' : 'high');
   document.getElementById('r-verdict').textContent=r.verdict;
   document.getElementById('r-summary').textContent=r.summary;
 
@@ -939,6 +941,17 @@ function showResult(r){
     fEl.appendChild(d);
   });
 
+  // Show heatmap
+const hmWrap = document.getElementById('r-heatmap-img-wrap');
+if(r.heatmap && r.heatmap.length > 0){
+    hmWrap.innerHTML = `
+        <div class="r-section-title">Segmentation Heatmap</div>
+        <img src="data:image/png;base64,${r.heatmap}" 
+             style="width:100%;border:1px solid var(--border);display:block;margin-bottom:20px;">
+    `;
+} else {
+    hmWrap.innerHTML = '';
+}
   const at=document.getElementById('r-attribution');at.innerHTML='';
   (r.attribution||[]).forEach((a,i)=>{
     const d=document.createElement('div');
