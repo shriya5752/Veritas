@@ -1,3 +1,4 @@
+
 # schemas.py
 from pydantic import BaseModel
 from typing import List
@@ -30,3 +31,15 @@ class AnalysisResponse(BaseModel):
     regions: List[Region]
     findings: List[Finding]
     attribution: List[Attribution]
+
+class AnalysisResponse(BaseModel):
+    ai_score: float
+    originality_score: float
+    manipulation_confidence: float
+    gan_fingerprint: float
+    verdict: str
+    summary: str
+    regions: List[Region]
+    findings: List[Finding]
+    attribution: List[Attribution]
+    heatmap: str = ""  # base64 encoded PNG
