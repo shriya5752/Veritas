@@ -22,7 +22,11 @@ async def run_analysis(img: Image.Image, filename: str) -> AnalysisResponse:
     # scores = { "ai_score", "originality_score", "manipulation_confidence", "gan_fingerprint" }
 
     # ── Step 3: Get verdict and summary ──────────────────────
-    verdict = get_verdict(scores["ai_score"])
+    # verdict = get_verdict(scores["ai_score"])
+    verdict = get_verdict(
+        scores["ai_score"],
+        scores["originality_score"]
+    )
     summary = get_summary(verdict, scores, raw["class"])
 
     # ── Step 4: Generate region heatmap ──────────────────────
@@ -39,16 +43,18 @@ async def run_analysis(img: Image.Image, filename: str) -> AnalysisResponse:
 
     # ── Step 7: Return full response ─────────────────────────
     return AnalysisResponse(
-    ai_score=scores["ai_score"],
-    originality_score=scores["originality_score"],
-    manipulation_confidence=scores["manipulation_confidence"],
-    gan_fingerprint=scores["gan_fingerprint"],
-    verdict=verdict,
-    summary=summary,
-    regions=regions,
-    findings=findings,
-    attribution=attribution
-)
+        ai_score=scores["ai_score"],
+        originality_score=scores["originality_score"],
+        manipulation_confidence=scores["manipulation_confidence"],
+        gan_fingerprint=scores["gan_fingerprint"],
+        display_score=scores["display_score"],
+        display_label=scores["display_label"],
+        verdict=verdict,
+        summary=summary,
+        regions=regions,
+        findings=findings,
+        attribution=attribution
+    )
 
 
 def generate_findings(scores: dict, raw: dict) -> list[Finding]:

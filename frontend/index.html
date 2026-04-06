@@ -892,7 +892,7 @@ async function runScan(){
     lastResult = result;
     setTimeout(() => { loadEl.classList.remove('show'); showResult(result); }, 250);
     setStatus('done', result.verdict);
-    term('complete → ' + result.verdict + ' · ai: ' + result.ai_score + '%');
+    term('complete → ' + result.display_label + ' · score: ' + result.display_score + '%');
 
   } catch(err) {
     clearInterval(sit);
@@ -911,8 +911,11 @@ async function runScan(){
 function showResult(r){
   document.getElementById('a-result-content').style.display='block';
   const sn=document.getElementById('r-score-num');
-  sn.textContent = r.ai_score + '%';
-  sn.className = 'r-score-num ' + (r.originality_score >= 70 ? 'low' : r.originality_score >= 40 ? 'med' : 'high');
+  sn.textContent = r.display_score + '%';
+
+  const score = r.display_score;
+  sn.className = 'r-score-num ' + (score >= 70 ? 'high' :score >= 40 ? 'med' :'low');
+
   document.getElementById('r-verdict').textContent=r.verdict;
   document.getElementById('r-summary').textContent=r.summary;
 

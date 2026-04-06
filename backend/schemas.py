@@ -20,23 +20,13 @@ class Attribution(BaseModel):
     model: str
     confidence: float
 
-# ── Full response — matches frontend API contract exactly ─────
 class AnalysisResponse(BaseModel):
     ai_score: float
     originality_score: float
     manipulation_confidence: float
     gan_fingerprint: float
-    verdict: str   # "AUTHENTIC" | "LIKELY AUTHENTIC" | "INCONCLUSIVE" | "LIKELY AI-GENERATED" | "AI-GENERATED" | "HYBRID"
-    summary: str
-    regions: List[Region]
-    findings: List[Finding]
-    attribution: List[Attribution]
-
-class AnalysisResponse(BaseModel):
-    ai_score: float
-    originality_score: float
-    manipulation_confidence: float
-    gan_fingerprint: float
+    display_score: float
+    display_label: str
     verdict: str
     summary: str
     regions: List[Region]
