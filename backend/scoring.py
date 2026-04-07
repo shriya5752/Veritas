@@ -21,36 +21,60 @@ def calculate_scores(raw: dict) -> dict:
     else:
         gan_fingerprint = round(ai_score * 0.20, 1)
 
+    # 🔥 Dominant display logic
+    if ai_score >= originality_score:
+        display_score = ai_score
+        display_label = "AI-GENERATED"
+    else:
+        display_score = originality_score
+        display_label = "AUTHENTIC"
+
     return {
         "ai_score": ai_score,
         "originality_score": originality_score,
         "manipulation_confidence": manipulation_confidence,
-        "gan_fingerprint": gan_fingerprint
+        "gan_fingerprint": gan_fingerprint,
+        "display_score": display_score,
+        "display_label": display_label
     }
 
 
-def get_verdict(ai_score: float) -> str:
-    if ai_score >= 85:
-        return "AI-GENERATED"
-    elif ai_score >= 70:
-        return "LIKELY AI-GENERATED"
-    elif ai_score >= 50:
-        return "HYBRID"
-    elif ai_score >= 30:
-        return "INCONCLUSIVE"
-    elif ai_score >= 15:
-        return "LIKELY AUTHENTIC"
+# 🔥 FIXED: now uses BOTH scores
+def get_verdict(ai_score: float, originality_score: float) -> str:
+
+    if ai_score >= originality_score:
+        # AI side
+        if ai_score >= 85:
+            return "AI-GENERATED"
+        elif ai_score >= 70:
+            return "LIKELY AI-GENERATED"
+        elif ai_score >= 50:
+            return "HYBRID"
+        else:
+            return "INCONCLUSIVE"
     else:
-        return "AUTHENTIC"
+        # Authentic side
+        if originality_score >= 85:
+            return "AUTHENTIC"
+        elif originality_score >= 70:
+            return "LIKELY AUTHENTIC"
+        else:
+            return "INCONCLUSIVE"
 
 
 def get_summary(verdict: str, scores: dict, img_class: str) -> str:
     summaries = {
-        "AI-GENERATED": f"Strong GAN fingerprint signatures detected across primary image regions. Texture synthesis patterns are consistent with known AI generation architectures.",
+        "AI-GENERATED": "Strong GAN fingerprint signatures detected across primary image regions. Texture synthesis patterns are consistent with known AI generation architectures.",
+        
         "LIKELY AI-GENERATED": f"Image shows significant AI generation signals with {scores['ai_score']}% derivation score. Multiple synthetic patterns detected across key regions.",
+        
         "HYBRID": f"Image contains a mix of authentic and AI-generated content. Partial synthesis detected with {scores['ai_score']}% AI influence score.",
+        
         "INCONCLUSIVE": f"Analysis returned inconclusive results. Image shows weak signals of both authentic and synthetic origin at {scores['ai_score']}% AI score.",
+        
         "LIKELY AUTHENTIC": f"Image appears largely authentic with minor anomalies. Low AI derivation score of {scores['ai_score']}% suggests real-world origin.",
-        "AUTHENTIC": f"No significant AI generation signals detected. Image metadata and pixel patterns are consistent with authentic photographic origin."
+        
+        "AUTHENTIC": "No significant AI generation signals detected. Image metadata and pixel patterns are consistent with authentic photographic origin."
     }
+
     return summaries.get(verdict, "Analysis complete.")

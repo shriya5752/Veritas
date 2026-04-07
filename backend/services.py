@@ -22,12 +22,19 @@ async def run_analysis(img: Image.Image, filename: str) -> AnalysisResponse:
     # scores = { "ai_score", "originality_score", "manipulation_confidence", "gan_fingerprint" }
 
     # ── Step 3: Get verdict and summary ──────────────────────
-    verdict = get_verdict(scores["ai_score"])
+    # verdict = get_verdict(scores["ai_score"])
+    verdict = get_verdict(
+        scores["ai_score"],
+        scores["originality_score"]
+    )
     summary = get_summary(verdict, scores, raw["class"])
 
     # ── Step 4: Generate region heatmap ──────────────────────
-    regions = generate_heatmap_regions(scores["ai_score"], raw["class"])
-
+    regions = generate_heatmap_regions(
+    scores["ai_score"],
+    raw["class"],
+    mask=raw.get("mask")  # actual pixel mask from model
+)
     # ── Step 5: Generate findings ────────────────────────────
     findings = generate_findings(scores, raw)
 
@@ -40,6 +47,8 @@ async def run_analysis(img: Image.Image, filename: str) -> AnalysisResponse:
         originality_score=scores["originality_score"],
         manipulation_confidence=scores["manipulation_confidence"],
         gan_fingerprint=scores["gan_fingerprint"],
+        display_score=scores["display_score"],
+        display_label=scores["display_label"],
         verdict=verdict,
         summary=summary,
         regions=regions,

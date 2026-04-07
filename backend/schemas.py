@@ -1,3 +1,4 @@
+
 # schemas.py
 from pydantic import BaseModel
 from typing import List
@@ -19,14 +20,16 @@ class Attribution(BaseModel):
     model: str
     confidence: float
 
-# ── Full response — matches frontend API contract exactly ─────
 class AnalysisResponse(BaseModel):
     ai_score: float
     originality_score: float
     manipulation_confidence: float
     gan_fingerprint: float
-    verdict: str   # "AUTHENTIC" | "LIKELY AUTHENTIC" | "INCONCLUSIVE" | "LIKELY AI-GENERATED" | "AI-GENERATED" | "HYBRID"
+    display_score: float
+    display_label: str
+    verdict: str
     summary: str
     regions: List[Region]
     findings: List[Finding]
     attribution: List[Attribution]
+    heatmap: str = ""  # base64 encoded PNG
