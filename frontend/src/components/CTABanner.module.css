@@ -1,0 +1,82 @@
+.banner {
+  padding: 140px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner::before {
+  content: 'VERITAS';
+  position: absolute;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 30vw;
+  letter-spacing: 0.04em;
+  color: rgba(232,224,212,0.022);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1;
+  animation: bgTextDrift 20s ease-in-out infinite alternate;
+}
+
+.sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 48px;
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--oxblood);
+  padding: 20px 60px;
+  border: none;
+  cursor: none;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  background: var(--ox2);
+  box-shadow: 0 0 48px rgba(107,31,36,0.5);
+}
+
+.footer {
+  padding: 36px 64px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerLogo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--cream);
+}
+
+.footerRight {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--cream);
+  text-align: right;
+  line-height: 2.2;
+  text-transform: uppercase;
+  opacity: 0.6;
+}

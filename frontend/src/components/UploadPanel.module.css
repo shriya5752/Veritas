@@ -1,0 +1,214 @@
+.col {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  gap: 18px;
+  background: var(--ink2);
+}
+
+.panelLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--cream);
+  text-transform: uppercase;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0.8;
+}
+
+.liveDot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--rose);
+  box-shadow: 0 0 6px var(--rose);
+  animation: pulse-dot 1.5s infinite;
+}
+
+.drop {
+  border: 1px solid var(--border2);
+  padding: 44px 20px;
+  text-align: center;
+  cursor: none;
+  transition: all 0.3s;
+  position: relative;
+  background: rgba(232,224,212,0.02);
+}
+
+.drop:hover, .over {
+  border-color: var(--rose);
+  background: var(--rose-glow);
+}
+
+.dropIcon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  color: var(--cream);
+  display: block;
+  margin-bottom: 12px;
+  line-height: 1;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.dropTitle {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bone2);
+  margin-bottom: 6px;
+}
+
+.dropSub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.previewWrap {}
+
+.previewImg {
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.previewMeta {
+  padding: 8px 0;
+  display: flex;
+  gap: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.err {
+  padding: 12px 14px;
+  background: rgba(107,31,36,0.2);
+  border: 1px solid rgba(107,31,36,0.4);
+  color: var(--rose2);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.scanBtn {
+  width: 100%;
+  padding: 16px;
+  background: var(--oxblood);
+  border: none;
+  color: var(--bone);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.scanBtn:hover { background: var(--ox2); }
+.scanBtn:disabled { background: var(--surface2); color: var(--dim); }
+
+.sp {
+  display: none;
+  width: 12px; height: 12px;
+  border: 1px solid var(--muted);
+  border-top-color: var(--bone);
+  border-radius: 50%;
+  animation: spin 0.5s linear infinite;
+}
+
+.loading .sp { display: block; }
+.loading .btnTxt { display: none; }
+
+.terminal {
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  display: flex;
+  gap: 8px;
+  opacity: 0.7;
+}
+
+.prompt {
+  color: var(--rose);
+  flex-shrink: 0;
+}
+
+.postScanActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+  animation: fadeSlideIn 0.25s ease forwards;
+}
+ 
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
+/* Shared base for all three action buttons */
+.actionBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+ 
+.actionIcon {
+  font-size: 12px;
+  line-height: 1;
+}
+ 
+/* Rescan — subtle amber accent to signal "same image, try again" */
+.actionRescan:hover {
+  background: rgba(160, 100, 40, 0.18);
+  border-color: rgba(200, 130, 50, 0.35);
+  color: #c8823a;
+}
+ 
+/* Re-upload — muted blue-grey */
+.actionReupload:hover {
+  background: rgba(60, 100, 140, 0.18);
+  border-color: rgba(80, 130, 180, 0.35);
+  color: #6fa8d0;
+}
+ 
+/* New Image — the crimson/red that matches Run Veritas Scan */
+.actionNew:hover {
+  background: rgba(120, 20, 20, 0.25);
+  border-color: rgba(180, 40, 40, 0.45);
+  color: #c04040;
+}

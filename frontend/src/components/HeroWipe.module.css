@@ -1,0 +1,277 @@
+/* ── keyframes inline so CSS modules can resolve them ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+@keyframes handlePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,133,122,0); }
+  50%       { box-shadow: 0 0 0 8px rgba(201,133,122,0.2); }
+}
+@keyframes ctaShimmer {
+  0%        { transform: translateX(-100%); }
+  40%, 100% { transform: translateX(100%); }
+}
+@keyframes particleFloat {
+  0%   { opacity: 0; transform: translateY(0) scale(0); }
+  10%  { opacity: 0.4; }
+  90%  { opacity: 0.15; }
+  100% { opacity: 0; transform: translateY(-100vh) scale(1); }
+}
+
+.hero {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* z-index stack:
+   0  → backgrounds (wipeReal, wipeAi)
+   1  → canvases
+   2  → particles, labels
+   3  → scanlines
+   10 → divider handle
+   20 → hero text content  ← always on top
+*/
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+.wipeReal {
+  position: absolute;
+  inset: 0;
+  background: #0d0b09;
+  z-index: 0;
+}
+
+.wipeAi {
+  position: absolute;
+  inset: 0;
+  background: #100909;
+  clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
+  z-index: 0;
+}
+
+.realLabel {
+  position: absolute;
+  bottom: 52px;
+  left: 64px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--gold2);
+  text-transform: uppercase;
+  opacity: 0.85;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+.realLabel::before {
+  content: '●';
+  animation: blink 2s infinite;
+  color: var(--gold2);
+}
+
+.aiLabel {
+  position: absolute;
+  bottom: 52px;
+  right: 64px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--rose2);
+  text-transform: uppercase;
+  opacity: 0.85;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+  z-index: 2;
+}
+.aiLabel::before {
+  content: '●';
+  animation: blink 1.2s infinite;
+  color: var(--rose2);
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(232,224,212,0.012) 3px,
+    rgba(232,224,212,0.012) 4px
+  );
+  pointer-events: none;
+}
+
+.divider {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--bone);
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 24px rgba(232,224,212,0.18);
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.handle {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; height: 40px;
+  border: 1px solid var(--border2);
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bone);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  user-select: none;
+  animation: handlePulse 2s ease-in-out infinite;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  background: var(--bone);
+  border-radius: 50%;
+  animation: particleFloat linear infinite;
+  opacity: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 20;
+  text-align: center;
+  pointer-events: none;
+  max-width: 800px;
+  padding: 0 32px;
+}
+
+.kicker {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--cream);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.3s forwards;
+}
+
+.title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 300;
+  font-size: clamp(80px, 14vw, 180px);
+  line-height: 0.86;
+  letter-spacing: 0.06em;
+  color: var(--bone2);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.5s forwards;
+}
+
+.accent {
+  font-weight: 600;
+  -webkit-text-stroke: 1px var(--rose);
+  color: transparent;
+  display: block;
+}
+
+.tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(18px, 2.2vw, 26px);
+  color: var(--cream);
+  margin-top: 28px;
+  margin-bottom: 44px;
+  line-height: 1.4;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.7s forwards;
+  pointer-events: all;
+}
+
+.tagline em {
+  color: var(--bone2);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--oxblood);
+  padding: 16px 44px;
+  border: none;
+  cursor: none;
+  transition: all 0.3s;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.9s forwards;
+  pointer-events: all;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(232,224,212,0.08), transparent);
+  transform: translateX(-100%);
+  animation: ctaShimmer 3s ease 2s infinite;
+}
+
+.cta:hover {
+  background: var(--ox2);
+  box-shadow: 0 0 32px rgba(107,31,36,0.4);
+}
+
+.hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--cream);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.2s forwards;
+  z-index: 20;
+}
