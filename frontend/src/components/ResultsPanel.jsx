@@ -81,16 +81,41 @@ export function ResultContent({ result }) {
     return () => clearTimeout(t);
   }, [result]);
 
-  const score = result.display_score;
-  const scoreClass = score >= 70 ? styles.scoreHigh : score >= 40 ? styles.scoreMed : styles.scoreLow;
+  // ✅ FIRST: compute values
+  const originality = result.originality_score;
+
+  let displayLabel;
+  let displayValue;
+
+  if (originality > 50) {
+    displayLabel = "AUTHENTIC";
+    displayValue = originality;
+  } else {
+    displayLabel = "AI GENERATED";
+    displayValue = 100 - originality;
+  }
+
+  // ✅ THEN use it
+  const score = displayValue;
+
+  const scoreClass =
+    score >= 70
+      ? styles.scoreHigh
+      : score >= 40
+      ? styles.scoreMed
+      : styles.scoreLow;
 
   return (
     <div className={styles.resultContent}>
       {/* Score hero */}
       <div className={styles.scoreHero}>
-        <div className={`${styles.scoreNum} ${scoreClass}`}>{score}%</div>
+        <div className={`${styles.scoreNum} ${scoreClass}`}>
+        {displayValue.toFixed(1)}%
+      </div>
         <div>
-          <div className={styles.verdict}>{result.verdict}</div>
+          <div className={styles.verdict}>
+          {displayLabel}
+        </div>
           <div className={styles.verdictSub}>Originality Score</div>
           <div className={styles.summary}>{result.summary}</div>
         </div>
@@ -112,11 +137,20 @@ export function ResultContent({ result }) {
       {result.heatmap && (
         <div style={{ marginBottom: 20 }}>
           <div className={styles.sectionTitle}>Segmentation Heatmap</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
           <img
             src={`data:image/png;base64,${result.heatmap}`}
-            style={{ width: "100%", border: "1px solid var(--border)", display: "block" }}
             alt="heatmap"
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              height: "auto",
+              borderRadius: "12px"
+            }}
           />
+        </div>
+</div>
         </div>
       )}
 
