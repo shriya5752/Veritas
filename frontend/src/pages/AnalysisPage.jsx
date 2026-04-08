@@ -124,8 +124,15 @@ export default function AnalysisPage({ onBack }) {
           throw new Error(`Backend returned ${resp.status}: ${txt}`);
         }
         res = await resp.json();
-        res.display_score = res.ai_score;
-        res.display_label = res.verdict;
+        const originality = res.originality_score;
+
+        if (originality > 50) {
+          res.display_score = originality;
+          res.display_label = "AUTHENTIC";
+        } else {
+          res.display_score = 100 - originality;
+          res.display_label = "AI GENERATED";
+        }
         if (typeof res.ai_score === "undefined") throw new Error("Backend response missing ai_score field");
         if (!res.verdict) throw new Error("Backend response missing verdict field");
       }
