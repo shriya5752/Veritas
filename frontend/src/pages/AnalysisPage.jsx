@@ -190,7 +190,7 @@ export default function AnalysisPage({ onBack }) {
           <div className={styles.resultInner}>
             {showEmpty   && <EmptyState />}
             {showLoading && <LoadingPanel activeStep={activeStep} />}
-            {showResult  && <ResultContent result={result} />}
+            {showResult  && <ResultContent result={result} imageUrl={preview} imageName={file?.name} />}
           </div>
         </div>
       </div>
