@@ -27,12 +27,14 @@ dataset/
 .DS_Store
 Thumbs.db
 
+# Node / Frontend
+node_modules/
+dist/
+
 # Output images (optional — remove if you want to track these)
 test_sample_*.png
 training_curves.png
 score_scatter.png
 model/veritas_seg_best/
-model/veritas_seg_best.pth
-model/veritas_seg_best.pth.zipmodel/veritas_seg_best/
 model/veritas_seg_best.pth
 model/veritas_seg_best.pth.zip

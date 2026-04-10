@@ -1,43 +1,48 @@
-# image_utils.py
+import numpy as np
 from schemas import Region
 
-def generate_heatmap_regions(ai_score: float, img_class: str) -> list[Region]:
-
-    # Base region definitions
-    region_names = ["Background", "Foreground", "Texture", "Edges", "Lighting", "Metadata"]
-
+def generate_heatmap_regions(ai_score: float, img_class: str, mask: list = None) -> list[Region]:
     regions = []
 
-    for i, name in enumerate(region_names):
+    if mask is not None:
+        # Use actual mask from model — divide into real spatial regions
+        m = np.array(mask)
+        h, w = m.shape
 
-        # Metadata is almost always clean — real cameras leave metadata
-        if name == "Metadata":
-            if img_class == "AI":
-                score = 5.0
-                status = "clean"
-            elif img_class == "Tampered":
-                score = round(ai_score * 0.4, 1)
-                status = "suspect" if score > 30 else "clean"
-            else:
-                score = 10.0
-                status = "clean"
+        # Split mask into spatial zones
+        top    = m[:h//2, :]
+        bottom = m[h//2:, :]
+        left   = m[:, :w//2]
+        right  = m[:, w//2:]
+        center = m[h//4:3*h//4, w//4:3*w//4]
+        edge   = np.concatenate([m[0,:], m[-1,:], m[:,0], m[:,-1]])
 
-        # Other regions vary based on ai_score
+        zone_scores = {
+            "Background": round(float(top.mean()) * 100, 1),
+            "Foreground": round(float(bottom.mean()) * 100, 1),
+            "Texture":    round(float(center.mean()) * 100, 1),
+            "Edges":      round(float(edge.mean()) * 100, 1),
+            "Lighting":   round(float(right.mean()) * 100, 1),
+            "Metadata":   5.0 if img_class != "AI" else round(float(left.mean()) * 100, 1),
+        }
+    else:
+        # Fallback if no mask — use ai_score with small variance
+        zone_scores = {
+            "Background": round(ai_score, 1),
+            "Foreground": round(ai_score * 0.9, 1),
+            "Texture":    round(ai_score * 0.8, 1),
+            "Edges":      round(ai_score * 0.7, 1),
+            "Lighting":   round(ai_score * 0.85, 1),
+            "Metadata":   5.0 if img_class != "AI" else round(ai_score * 0.3, 1),
+        }
+
+    for name, score in zone_scores.items():
+        if score >= 60:
+            status = "ai"
+        elif score >= 30:
+            status = "suspect"
         else:
-            variance = (i * 7) % 15  # slight variance per region
-            score = round(min(100, max(0, ai_score + variance - 7)), 1)
-
-            if score >= 70:
-                status = "ai"
-            elif score >= 40:
-                status = "suspect"
-            else:
-                status = "clean"
-
-        regions.append(Region(
-            name=name,
-            score=score,
-            status=status
-        ))
+            status = "clean"
+        regions.append(Region(name=name, score=score, status=status))
 
     return regions

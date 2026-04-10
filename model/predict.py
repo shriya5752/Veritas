@@ -17,6 +17,8 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from PIL import Image
 import matplotlib.pyplot as plt
+import base64
+import io
 
 # ── Config ────────────────────────────────────────────────────────────────────
 IMG_SIZE   = 256
@@ -133,3 +135,40 @@ if __name__ == '__main__':
 
     model  = load_model(args.model)
     result = predict(args.image, model, save_path=args.save)
+
+
+def predict_from_pil(img: Image.Image, model) -> dict:
+    img_np = np.array(img.convert('RGB'))
+    inp    = INFER_TF(image=img_np)['image'].unsqueeze(0).to(DEVICE)
+
+    with torch.no_grad():
+        pred_mask = torch.sigmoid(model(inp)).squeeze().cpu().numpy()
+
+    deriv_score = float(pred_mask.mean())
+    ai_pct      = deriv_score * 100
+
+    if deriv_score < 0.15:
+        img_class = 'Original'
+    elif deriv_score < 0.60:
+        img_class = 'Tampered'
+    else:
+        img_class = 'AI'
+
+    # Generate heatmap overlay
+    img_display  = np.array(img.resize((IMG_SIZE, IMG_SIZE)))
+    mask_display = cv2.resize(pred_mask, (IMG_SIZE, IMG_SIZE))
+    heatmap      = cv2.applyColorMap((mask_display * 255).astype(np.uint8), cv2.COLORMAP_JET)
+    heatmap      = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+    overlay      = cv2.addWeighted(img_display, 0.6, heatmap, 0.4, 0)
+    overlay_pil  = Image.fromarray(overlay)
+    buf          = io.BytesIO()
+    overlay_pil.save(buf, format='PNG')
+    heatmap_b64  = base64.b64encode(buf.getvalue()).decode('utf-8')
+
+    return {
+        'class':            img_class,
+        'confidence':       round(ai_pct, 1),
+        'derivation_score': round(ai_pct, 1),
+        'mask':             pred_mask,
+        'heatmap_b64':      heatmap_b64
+    }

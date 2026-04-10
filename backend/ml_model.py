@@ -44,7 +44,8 @@ def predict(img: Image.Image) -> dict:
     }
 
     return {
-        "class":            verdict_map.get(result['verdict'], 'AI'),
-        "confidence":       round(result['ai_percentage'], 2),
-        "derivation_score": round(result['ai_percentage'], 2)
-    }
+    "class":            verdict_map.get(result['verdict'], 'AI'),
+    "confidence":       round(result['ai_percentage'], 2),
+    "derivation_score": round(result['ai_percentage'], 2),
+    "mask":             result['mask']   # ← add this line
+}
